@@ -44,56 +44,5 @@ public class Product implements Serializable {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private Set<DetailsProduct> detailsProduct;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public Set<ProductImage> getProductImages() {
-		return productImages;
-	}
-
-	public void setProductImages(Set<ProductImage> productImages) {
-		this.productImages = productImages;
-	}
-
-	public Set<DetailsProduct> getDetailsProduct() {
-		return detailsProduct;
-	}
-
-	public void setDetailsProduct(Set<DetailsProduct> detailsProduct) {
-		this.detailsProduct = detailsProduct;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
 }

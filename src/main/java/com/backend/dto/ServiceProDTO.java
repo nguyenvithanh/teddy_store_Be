@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceProDTO {
+	
     private String name;
     private BigDecimal priceSv;
     private Integer product_count;
+    private String id;
 
 }

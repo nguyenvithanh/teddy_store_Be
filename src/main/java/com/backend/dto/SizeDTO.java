@@ -14,6 +14,7 @@ public class SizeDTO {
 	private Integer price;
 	private Integer price_sale;
 	private Integer quantity;
+	private Integer count;
 
 	
 }

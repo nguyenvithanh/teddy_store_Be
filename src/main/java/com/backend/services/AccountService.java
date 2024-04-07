@@ -13,4 +13,9 @@ public interface AccountService {
 	Account getInfoByUsername(String username);
 
     public Account loginWithFacebook(Account acc);
+    
+    boolean isExistId(String id);
+	boolean isExistUsername(String username);
+	boolean registerAccount(Account acc);
+	String resetPassword(String email); 
 }

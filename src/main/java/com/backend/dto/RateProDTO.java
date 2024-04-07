@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RateProDTO {
-    private Double star_no;
+    private Integer star_no;
 	private Integer Number_rate;
 	private Integer Quantity; 
 }

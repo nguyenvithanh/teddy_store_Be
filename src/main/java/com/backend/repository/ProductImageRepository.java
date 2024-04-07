@@ -1,6 +1,7 @@
 package com.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Stri
      "JOIN PRODUCT_IMAGE pi ON pi.id_pro = p.id " +
      "WHERE p.id = :id", nativeQuery = true)
     List<Object[]> getProductImages(@Param("id") String id);
+    
+    @Query("SELECT a FROM ProductImage a ORDER BY a.id DESC LIMIT 1")
+    Optional<ProductImage> findLastProductImage();
 }

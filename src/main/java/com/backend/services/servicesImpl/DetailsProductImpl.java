@@ -46,6 +46,11 @@ public class DetailsProductImpl implements DetailsProductService {
 		return convertToObjectDTO(results);
 	}
 
+	public List<DetailProDTO> getProductDt(String sizeId,String colorId) {
+		List<Object[]> results = detailsProductRepository.getProductDt(sizeId,colorId );
+		return convertToObjectDTO(results);
+	}
+
 	
 
 }

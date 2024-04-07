@@ -1,20 +1,19 @@
 package com.backend.services.servicesImpl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import com.backend.dto.AccountInfoDTO;
-import com.backend.dto.CartDTO;
-import com.backend.repository.AccountInfoRepository;
-import com.backend.services.AccountInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.backend.dto.AccountInfoDTO;
 import com.backend.model.AccountInfo;
+import com.backend.repository.AccountInfoRepository;
+import com.backend.services.AccountInfoService;
+import com.backend.util.RandomUtil;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AccountInfoImpl implements AccountInfoService {
@@ -53,4 +52,21 @@ public class AccountInfoImpl implements AccountInfoService {
 
         return cartDetailsDTOList;
     }
+    @Override
+	public boolean isExistEmail(String email) {
+		return accountInfoRepository.findByEmail(email)
+				.isPresent();
+	}
+
+	@Override
+	@Transactional
+	public void saveAccountInfor(AccountInfo accountInfor) {
+		var lastAccInfo = accountInfoRepository.findLastAccountInfor();
+		if(lastAccInfo.isPresent()){
+			accountInfor.setId(RandomUtil.getNextId(lastAccInfo.get().getId(), "IA"));
+		}else {
+			accountInfor.setId(RandomUtil.getNextId(null, "IA"));
+		}
+		accountInfoRepository.save(accountInfor);
+	}
 }

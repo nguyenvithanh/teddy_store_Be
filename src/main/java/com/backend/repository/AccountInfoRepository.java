@@ -1,14 +1,14 @@
 package com.backend.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.backend.model.AccountInfo;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface AccountInfoRepository extends JpaRepository<AccountInfo, String> {
@@ -20,6 +20,9 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, String
             "WHERE A.ID =:id " +
             "GROUP BY IA.ID, IA.AVATAR, IA.NAME, IA.GENDER, IA.EMAIL, IA.PHONE, IA.BIRTHDAY", nativeQuery = true)
     public List<Object[]> findDataAccWithId(@Param("id") String id);
+    Optional<AccountInfo> findByEmail(String email);
 
+    @Query("SELECT a FROM AccountInfo a ORDER BY a.id DESC LIMIT 1")
+    Optional<AccountInfo> findLastAccountInfor();
 }
 	

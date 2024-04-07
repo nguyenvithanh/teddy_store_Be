@@ -28,7 +28,8 @@ public class ServiceImpl implements ServiceService{
 			ServiceProDTO ServiceProDTO = new ServiceProDTO();
 			ServiceProDTO.setName((String) result[0]);
 			ServiceProDTO.setPriceSv((BigDecimal) result[1]);
-			ServiceProDTO.setProduct_count((Integer) result[2]); 
+			ServiceProDTO.setProduct_count((Integer) result[2]);
+			ServiceProDTO.setId((String) result[3]);
 
 			ServiceProDTOList.add(ServiceProDTO);
 		}

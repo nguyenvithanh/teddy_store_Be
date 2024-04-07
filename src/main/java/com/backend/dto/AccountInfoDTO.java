@@ -1,7 +1,5 @@
 package com.backend.dto;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+ 
 import lombok.Data;
 
 import java.util.Date;

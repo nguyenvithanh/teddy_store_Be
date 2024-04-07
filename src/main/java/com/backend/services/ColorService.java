@@ -9,4 +9,10 @@ public interface ColorService {
 
 	public List<Color> getAllColor();
 	public List<ColorDTO> getColorById(String id);
+	
+	Object getAllColor(int page, int size);
+
+	Object updateColor(String id, String color);
+
+	Object searchColor(String color);
 }

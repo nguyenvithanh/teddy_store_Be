@@ -26,7 +26,7 @@ public class RateImpl implements RateService{
 
 		for (Object[] result : results) {
 			RateProDTO RateProDTO = new RateProDTO();
-			RateProDTO.setStar_no((Double) result[0]);
+			RateProDTO.setStar_no((Integer) result[0]);
 			RateProDTO.setNumber_rate((Integer) result[1]);
 			RateProDTO.setQuantity((Integer) result[2]); 
 

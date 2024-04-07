@@ -38,9 +38,6 @@ public class Transactions implements Serializable{
 	@Column(name="vnp_order_Info")
 	private String vnp_orderInfo;
 
-	@Column(name="vnp_pay_Date")
-	private Date vnp_payDate;
-
 	@Column(name="vnp_response_Code")
 	private String vnp_responseCode;
 

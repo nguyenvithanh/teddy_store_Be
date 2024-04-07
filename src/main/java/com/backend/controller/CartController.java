@@ -1,20 +1,14 @@
 package com.backend.controller;
-
 import java.util.List;
 
 import com.backend.dto.CartDTO;
+import com.backend.model.Cart;
+
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-=======
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
->>>>>>> 7bf7467e33583850fbbb56de3b2cdddeaf869bf1
 
-import com.backend.model.Cart;
 import com.backend.services.CartService;
 
 @RestController
@@ -35,4 +29,11 @@ public class CartController {
 		cartService.deleteCart(id);
 		return ResponseEntity.ok("Delete successfully!");
 	}
+	@PostMapping(value ="/add")
+    public ResponseEntity<String> addToCart(@RequestBody Cart cart) {
+		System.out.println(cart);
+		cartService.addToCart(cart);
+		return ResponseEntity.ok("Add vào giỏ hàng thành công");
+        
+    }
 }

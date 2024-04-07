@@ -14,7 +14,7 @@ import java.util.List;
 public class AddressController {
 
     @Autowired
-    AddressService addressService;
+    private	AddressService addressService;
 
     @GetMapping("/getDataAddressWithId/{id}")
     public List<Address> getDataAddressWithId(@PathVariable String id) {

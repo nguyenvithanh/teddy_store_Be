@@ -58,4 +58,10 @@ public class CartImpl implements CartService{
         cartRepository.deleteById(id);
     }
 
+	public void addToCart(Cart cart) {
+        // Xử lý logic và lưu trữ dữ liệu vào cơ sở dữ liệu
+        cartRepository.save(cart);
+    }
+	
+
 }

@@ -11,4 +11,8 @@ public interface AccountInfoService {
 	public List<AccountInfo> getAllAccountInfo();
 
 	public List<AccountInfoDTO> getDataWithId(String id);
+	
+	boolean isExistEmail(String email);
+
+	void saveAccountInfor(AccountInfo accountInfor);
 }

@@ -11,7 +11,7 @@ import com.backend.model.Rate;
 
 @Repository
 public interface RateRepository extends JpaRepository<Rate, String>{
-    @Query(value = "SELECT r.star_no, COUNT(r.id) AS Number_rate, COUNT(od.quantity) AS Quantity " + 
+    @Query(value = "SELECT r.star_no, COUNT(r.id) AS Number_rate, COUNT(od.quantity_pro) AS Quantity " + 
                "FROM DETAILS_PRODUCT dp " +
                "JOIN PRODUCT p ON p.id = dp.id_pro " +
                "JOIN RATE r ON r.id_dt_pro = dp.id " +

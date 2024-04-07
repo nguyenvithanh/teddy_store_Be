@@ -1,12 +1,14 @@
 package com.backend.services.servicesImpl;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.backend.dto.ProductDTO; 
+import com.backend.dto.ProductDTO;
 import com.backend.model.Product;
 import com.backend.repository.ProductRepository;
 import com.backend.services.ProductService;
@@ -52,31 +54,35 @@ public class ProductImpl implements ProductService {
 		return convertToProductsDTO(results);
 	}
 
-	// private List<ProductsDTO> convertToProductDetailsDTO(List<Object[]> results) {
-	// 	List<ProductsDTO> productsDTOList = new ArrayList<>();
-
-	// 	for (Object[] result : results) {
-	// 		ProductsDTO productssDTO = new ProductsDTO();
-	// 		productssDTO.setId((String) result[0]);
-	// 		productssDTO.setName((String) result[1]);
-	// 		productssDTO.setImg_url((String) result[2]);
-	// 		productssDTO.setPrice((Integer) result[3]);
-	// 		productssDTO.setPrice_sale((Integer) result[4]);
-	// 		productssDTO.setColor((String) result[5]);
-	// 		productssDTO.setSize_no((String) result[6]);
-	// 		productssDTO.setQuantity((Integer) result[7]); 
-
-	// 		productsDTOList.add(productssDTO);
-	// 	}
-
-	// 	return productsDTOList;
-	// }
-
-	 
 	public List<ProductDTO> getProductDetailsById(String id) {
 		List<Object[]> results = proRepository.getProductDetails(id);
 		return convertToProductsDTO(results);
 	}
+
+	@Override
+    public Object getAllProduct(int page, int size) {
+        Pageable pageable = (Pageable) PageRequest.of(page, size);
+        return proRepository.findAllProduct((org.springframework.data.domain.Pageable) pageable);
+    }
+
+    @Override
+    public Object getAllProductActive() {
+        return proRepository.findAllByActive(true);
+    }
+
+    @Override
+    public Object updateProduct(Product product) {
+        proRepository.save(product);
+        return "OK";
+    }
+
+    @Override
+    public Object searchProductByName(String name) {
+        return proRepository.findAllProductByName(name, PageRequest.of(0, 10));
+    }
+
+
+	
 
 	
 	 

@@ -29,7 +29,7 @@ public class Category implements Serializable {
 	private String name;
 
 	@Column(name = "active")
-	private String active;
+	private Boolean active;
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
 	private Set<Product> product;

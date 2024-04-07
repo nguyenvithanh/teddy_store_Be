@@ -10,5 +10,6 @@ public interface DetailsProductService {
 	public List<DetailsProduct> getAllDetailsProduct();
 
     public List<DetailProDTO> getProductDetails();
+    public List<DetailProDTO> getProductDt(String sizeId, String colorId);
    
 }
