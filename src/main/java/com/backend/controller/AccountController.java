@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.model.Account;
 import com.backend.model.AccountInfo;
 import com.backend.model.Address;
+import com.backend.payload.LoginPayload;
 import com.backend.payload.RegisterPayload;
 import com.backend.repository.AddressRepository;
 import com.backend.services.AccountInfoService;
@@ -43,14 +44,14 @@ public class AccountController {
 		return loginService.getAllAccount();
 	}
 
-	@PostMapping(value = "/login")
-	public ResponseEntity<Account> login(@RequestBody Account acc) {
+	@PostMapping("/login")
+	public ResponseEntity<Object> login(@RequestBody LoginPayload acc) {
 		String username = acc.getUsername();
 		String password = acc.getPassword();
 		System.err.println(username);
 
 		if (loginService.authenticateAcc(username, password)) {
-			Account authenticatedAcc = loginService.getInfoByUsername(username);
+			var authenticatedAcc = loginService.getInfoByUsernameV2(username);
 			return new ResponseEntity<>(authenticatedAcc, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -108,6 +109,7 @@ public class AccountController {
 		}
 		address.setSub_address("NULL");
 		address.setType_address("NULL");
+		address.setName_address("NULL");
 		address.setAccount(acc);
 		acc.setAddress(Set.of(address));
 
@@ -116,5 +118,7 @@ public class AccountController {
 		accountInforService.saveAccountInfor(accountInfor);
 		return "OK";
 	}
+	
+
 
 }

@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 
 @UtilityClass
 public class RandomUtil {
-	public String getNextId(String id, String prefix) {
+    public String getNextId(String id, String prefix) {
         if (id == null || id.isEmpty()) {
             return prefix + String.format("%08d", 1);
         }
