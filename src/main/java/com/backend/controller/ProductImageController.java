@@ -29,4 +29,5 @@ public class ProductImageController {
 	public List<ImgProDTO> getProductImg(@PathVariable String id){
 		return productImageService.getProductImages(id);
 	}
+	
 }

@@ -35,6 +35,7 @@ import com.backend.util.CloudinaryUtil;
 import com.backend.util.RandomUtil;
 import com.cloudinary.utils.StringUtils;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -101,7 +102,9 @@ public class ProductController {
     }
 
     @PostMapping("updateProduct")
+    @Transactional
     public Object updateProduct(
+            @RequestParam("id") String id,
             @RequestParam("description") String description,
             @RequestParam("idCate") String idCategory,
             @RequestParam("idColor") String idColor,
@@ -109,71 +112,131 @@ public class ProductController {
             @RequestParam("name") String name,
             @RequestParam("price") double price,
             @RequestParam("quantity") int quantity,
-            @RequestParam("images") List<MultipartFile> images
+            @RequestParam(value = "listImageDelete", required = false) List<String> listImageDelete,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images
     ) {
-        var lastProduct = proRepository.findLastProduct();
+        // kiem tra xem co trung ten khong
+        
         var product = new Product();
-        if (lastProduct.isPresent()) {
-            product.setId(RandomUtil.getNextId(lastProduct
-                                                       .get()
-                                                       .getId(), "PR"));
-        } else {
-            product.setId(RandomUtil.getNextId(null, "PR"));
-        }
-        product.setName(name);
-        product.setDescription(description);
-//        product.setActive(Boolean.TRUE);
-
-        // set details product
-        var lastDetailProduct = detailsProductRepository.findLastDetailsProduct();
         var detailProduct = new DetailsProduct();
-        if (lastDetailProduct.isPresent()) {
-            detailProduct.setId(RandomUtil.getNextId(lastDetailProduct
-                                                             .get()
-                                                             .getId(), "DP"));
-        } else {
-            detailProduct.setId(RandomUtil.getNextId(null, "DP"));
-        }
-        detailProduct.setPrice(price);
-        detailProduct.setQuantity(quantity); 
-        detailProduct.setActive(Boolean.TRUE);
+        var lastProductImage = productImageRepository.findLastProductImage();
         var category = categoryRepository.findById(idCategory);
         var color = colorRepository.findById(idColor);
         var size = sizeRepository.findById(idSize);
+        AtomicReference<String> productImageId = new AtomicReference<>("");
+        if ("P-1".equalsIgnoreCase(id)) {
+            var lastProduct = proRepository.findLastProduct();
+            if (lastProduct.isPresent()) {
+                product.setId(RandomUtil.getNextId(lastProduct
+                                                           .get()
+                                                           .getId(), "PR"));
+            } else {
+                product.setId(RandomUtil.getNextId(null, "PR"));
+            }
+            var lastDetailProduct = detailsProductRepository.findLastDetailsProduct();
+
+            if (lastDetailProduct.isPresent()) {
+                detailProduct.setId(RandomUtil.getNextId(lastDetailProduct
+                                                                 .get()
+                                                                 .getId(), "DP"));
+            } else {
+                detailProduct.setId(RandomUtil.getNextId(null, "DP"));
+            }
+            detailProduct.setStatus(Boolean.TRUE);
+            detailProduct.setActive(Boolean.TRUE);
+
+            List<ProductImage> setImages = new ArrayList<>();
+            Product finalProduct = product;
+            if (images != null && !images.isEmpty()) {
+                images.forEach(el -> {
+                    var productImage = new ProductImage();
+                    if (StringUtils.isEmpty(productImageId.get())) {
+                        if (lastProductImage.isPresent()) {
+                            productImageId.set(RandomUtil.getNextId(lastProductImage
+                                                                            .get()
+                                                                            .getId(), "PI"));
+                        } else {
+                            productImageId.set(RandomUtil.getNextId(null, "PI"));
+                        }
+                    } else {
+                        productImageId.set(RandomUtil.getNextId(productImageId.get(), "PI"));
+                    }
+                    productImage.setId(productImageId.get());
+                    try {
+                        var url = CloudinaryUtil.uploadImage(el.getBytes());
+                        productImage.setImg_url(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    productImage.setProduct(finalProduct);
+                    setImages.add(productImage);
+                });
+            }
+
+            // set images
+            product.setProductImages(new HashSet<>(setImages));
+            detailProduct.setProduct(product);
+        } else {
+            product = proRepository
+                    .findById(id)
+                    .get();
+            var dp = detailsProductRepository.findDetailsProductByProduct(id);
+            if (dp.isPresent()) {
+                detailProduct = dp.get();
+            }
+            var listImage = productImageRepository.findProductImageByProduct(id);
+            // remove image in listImageDelete
+            if (listImageDelete != null && !listImageDelete.isEmpty()) {
+                listImage.forEach(el -> {
+                    if (listImageDelete.contains(el.getId())) {
+                        productImageRepository.deleteById(el.getId());
+                    }
+                });
+            }
+            // add new image
+            Product finalProduct1 = product;
+            if (images != null && !images.isEmpty()) {
+                images.forEach(el -> {
+                    var productImage = new ProductImage();
+                    if (StringUtils.isEmpty(productImageId.get())) {
+                        if (lastProductImage.isPresent()) {
+                            productImageId.set(RandomUtil.getNextId(lastProductImage
+                                                                            .get()
+                                                                            .getId(), "PI"));
+                        } else {
+                            productImageId.set(RandomUtil.getNextId(null, "PI"));
+                        }
+                    } else {
+                        productImageId.set(RandomUtil.getNextId(productImageId.get(), "PI"));
+                    }
+                    productImage.setId(productImageId.get());
+                    try {
+                        var url = CloudinaryUtil.uploadImage(el.getBytes());
+                        productImage.setImg_url(url);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    productImage.setProduct(finalProduct1);
+                    productImageRepository.save(productImage);
+                });
+            }
+        }
+        product.setName(name);
+        product.setDescription(description);
+        // set details product
+        detailProduct.setPrice(price);
+        detailProduct.setQuantity(quantity);
+
+
         category.ifPresent(product::setCategory);
         color.ifPresent(detailProduct::setColor);
         size.ifPresent(detailProduct::setSize);
-        detailProduct.setProduct(product);
-        product.setDetailsProduct(Collections.singleton(detailProduct));
-        var lastProductImage = productImageRepository.findLastProductImage();
-        AtomicReference<String> productImageId = new AtomicReference<>("");
-        List<ProductImage> setImages = new ArrayList<>();
-        images.forEach(el -> {
-            var productImage = new ProductImage();
-            if(StringUtils.isEmpty(productImageId.get())){
-                if (lastProductImage.isPresent()) {
-                    productImageId.set(RandomUtil.getNextId(lastProductImage
-                                                                    .get()
-                                                                    .getId(), "PI"));
-                } else {
-                    productImageId.set(RandomUtil.getNextId(null, "PI"));
-                }
-            }else {
-                productImageId.set(RandomUtil.getNextId(productImageId.get(), "PI"));
-            }
-            productImage.setId(productImageId.get());
-            try {
-                var url = CloudinaryUtil.uploadImage(el.getBytes());
-                productImage.setImg_url(url);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            productImage.setProduct(product);
-            setImages.add(productImage);
-        });
-
-        // set images
-        product.setProductImages(new HashSet<>(setImages));
+        if ("P-1".equalsIgnoreCase(id)) {
+            product.setDetailsProduct(Collections.singleton(detailProduct));
+        } else {
+            detailsProductRepository.save(detailProduct);
+        }
         return proService.updateProduct(product);
     }
+
 }

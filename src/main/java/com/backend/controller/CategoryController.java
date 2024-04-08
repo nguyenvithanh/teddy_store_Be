@@ -25,6 +25,7 @@ public class CategoryController {
     public Object getAllCategory(@RequestParam("page") int page, @RequestParam("size") int size) {
         return cateService.getAllCategory(page, size);
     }
+    
     @GetMapping("/getAllCategoryActive")
     public Object getAllCategoryActive(){
         return cateService.getAllCategoryActive();

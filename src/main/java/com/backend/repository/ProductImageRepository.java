@@ -20,4 +20,12 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Stri
     
     @Query("SELECT a FROM ProductImage a ORDER BY a.id DESC LIMIT 1")
     Optional<ProductImage> findLastProductImage();
+    
+    @Query("SELECT a FROM ProductImage a WHERE a.product.id = :pid")
+    List<ProductImageRepositoryCustom> findProductImageByProduct(@Param("pid") String id);
+    interface ProductImageRepositoryCustom {
+        String getId();
+        String getImg_url();
+    }
 }
+

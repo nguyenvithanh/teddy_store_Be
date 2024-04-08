@@ -30,5 +30,8 @@ public interface DetailsProductRepository extends JpaRepository<DetailsProduct, 
 
   @Query("SELECT a FROM DetailsProduct a ORDER BY a.id DESC LIMIT 1")
   Optional<DetailsProduct> findLastDetailsProduct();
+  
+  @Query("SELECT a FROM DetailsProduct a WHERE a.product.id = :pid")
+  Optional<DetailsProduct> findDetailsProductByProduct(@Param("pid") String id);
 
 }

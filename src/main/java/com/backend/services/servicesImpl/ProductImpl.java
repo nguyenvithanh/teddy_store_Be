@@ -1,11 +1,12 @@
 package com.backend.services.servicesImpl;
 
-import java.awt.print.Pageable;
+//import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.dto.ProductDTO;
@@ -61,8 +62,8 @@ public class ProductImpl implements ProductService {
 
 	@Override
     public Object getAllProduct(int page, int size) {
-        Pageable pageable = (Pageable) PageRequest.of(page, size);
-        return proRepository.findAllProduct((org.springframework.data.domain.Pageable) pageable);
+        Pageable pageable =  PageRequest.of(page, size);
+        return proRepository.findAllProduct( pageable);
     }
 
     @Override
