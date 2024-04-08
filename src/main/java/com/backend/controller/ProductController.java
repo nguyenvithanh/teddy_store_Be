@@ -92,10 +92,12 @@ public class ProductController {
     }
     @PatchMapping("deleteProduct")
     public Object deleteProduct(@RequestBody ProductPayload productPayload) {
-        var product = proRepository.findById(productPayload.getId());
+        var product = detailsProductRepository.findDetailsProductByProduct(productPayload.getId());
         if (product.isPresent()) {
-//            product.get().setActive(Boolean.FALSE);
-            proRepository.save(product.get());
+            product
+                    .get()
+                    .setActive(Boolean.FALSE);
+            detailsProductRepository.save(product.get());
             return "OK";
         }
         return "FAIL";

@@ -33,13 +33,13 @@ public class AccountImpl implements AccountService {
     }
     @Override
     public boolean authenticateAcc(String username, String password) {
-        Account acc = accountRepository.findByUsername(username);
-        return acc != null && acc.getPassword().equals(password);
+        var acc = accountRepository.findByUsername(username);
+        return acc.isPresent() && acc.get().getPassword().equals(password);
     }
 
     @Override
     public Account getInfoByUsername(String username) {
-        return accountRepository.findByUsername(username);
+        return accountRepository.findByUsername(username).orElse(null);
     }
     
 
@@ -94,5 +94,10 @@ public class AccountImpl implements AccountService {
             throw new RuntimeException("Failed to send email");
         }
     }
+	@Override
+	public Object getInfoByUsernameV2(String username) {
+		// TODO Auto-generated method stub
+		return accountRepository.getByUsername(username).orElse(null);
+	}
 
 }

@@ -32,7 +32,7 @@ public class CategoryController {
     }
 
     @PostMapping("updateCategory")
-    public Object updateCategory(@RequestBody CategoryPayload category) {
+    public Object updateCategory(@RequestBody CategoryPayload category) { 
         return cateService.updateCategory(category.getId(), category.getName(), category.getActive());
     }
 
