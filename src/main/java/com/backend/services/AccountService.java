@@ -2,6 +2,8 @@ package com.backend.services;
 
 import java.util.List;
 
+import com.backend.dto.CustomerDto;
+import com.backend.dto.PaginateDTO;
 import com.backend.model.Account;
 
 public interface AccountService {
@@ -18,5 +20,9 @@ public interface AccountService {
     boolean isExistId(String id);
 	boolean isExistUsername(String username);
 	boolean registerAccount(Account acc);
-	String resetPassword(String email); 
+	String resetPassword(String email);
+
+	public PaginateDTO<List<CustomerDto>> getCustomerSearchAndPagination(String query, Boolean active, Integer pageNumber, Integer pageSize);
+
+	public boolean updateActiveCustomer(String id,Boolean active);
 }

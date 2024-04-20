@@ -47,12 +47,12 @@ public class AccountController {
 	@PostMapping("/login")
 	public ResponseEntity<Object> login(@RequestBody LoginPayload acc) {
 		String username = acc.getUsername();
-		String password = acc.getPassword();
-		System.err.println(username);
+			String password = acc.getPassword();
+			System.err.println(username);
 
-		if (loginService.authenticateAcc(username, password)) {
-			var authenticatedAcc = loginService.getInfoByUsernameV2(username);
-			return new ResponseEntity<>(authenticatedAcc, HttpStatus.OK);
+			if (loginService.authenticateAcc(username, password)) {
+				var authenticatedAcc = loginService.getInfoByUsernameV2(username);
+				return new ResponseEntity<>(authenticatedAcc, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}

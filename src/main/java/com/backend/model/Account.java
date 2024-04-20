@@ -63,7 +63,6 @@ public class Account implements Serializable {
     private Set<Delivery> delivery;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    
     private Set<Address> address;
 
     public Account(String id) {

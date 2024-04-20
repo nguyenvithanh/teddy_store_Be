@@ -1,9 +1,18 @@
 package com.backend.services.servicesImpl;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import com.backend.dto.AccountInfoDTO;
+import com.backend.dto.CustomerDto;
+import com.backend.dto.PaginateDTO;
+import com.backend.dto.mapper.AccountInfoMapper;
+import com.backend.dto.mapper.AccountMapper;
+import com.backend.model.AccountInfo;
+import com.backend.model.Address;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -94,7 +103,54 @@ public class AccountImpl implements AccountService {
             throw new RuntimeException("Failed to send email");
         }
     }
-	@Override
+
+    @Override
+    public PaginateDTO<List<CustomerDto>> getCustomerSearchAndPagination(String query, Boolean active, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Account> page = accountRepository.getAccountSearchAndPagination(query,active,pageable);
+        List<Account> accounts = page.getContent();
+        List<CustomerDto> customers = new ArrayList<>();
+
+        for (Account account : accounts) {
+            Iterator iterator1 = account.getAccountInfo().iterator();
+            Iterator iterator2 = account.getAddress().iterator();
+            AccountInfoDTO accountInfoDTO = null;
+            if (iterator1.hasNext()) {
+                AccountInfo accountInfo = (AccountInfo) iterator1.next();
+                if (iterator2.hasNext()) {
+                    Address address = (Address) iterator2.next();
+                    accountInfoDTO = AccountInfoMapper.modelToDto(accountInfo,address.getSub_address());
+                } else {
+                    accountInfoDTO = AccountInfoMapper.modelToDto(accountInfo,"");
+                }
+            }
+            customers.add(AccountMapper.toCustomerDto(account,accountInfoDTO));
+        }
+
+        PaginateDTO<List<CustomerDto>> dataResponse = new PaginateDTO<>(
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast(),
+                customers
+        );
+
+        return dataResponse;
+    }
+
+    @Override
+    public boolean updateActiveCustomer(String id, Boolean active) {
+        Account account = accountRepository.findById(id).orElseGet(null);
+        if (account != null) {
+            account.setActive(active);
+            Account accountSave = accountRepository.save(account);
+            return accountSave != null;
+        }
+        return false;
+    }
+
+    @Override
 	public Object getInfoByUsernameV2(String username) {
 		// TODO Auto-generated method stub
 		return accountRepository.getByUsername(username).orElse(null);
