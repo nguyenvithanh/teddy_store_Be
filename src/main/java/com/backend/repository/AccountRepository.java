@@ -33,6 +33,7 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 	Optional<AccountResponse> getByUsername(@Param("username") String username);
 
 	interface AccountResponse {
+		String getId();
 		String getUsername();
 
 		String getPassword();

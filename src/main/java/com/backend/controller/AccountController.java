@@ -23,9 +23,7 @@ import com.backend.payload.RegisterPayload;
 import com.backend.repository.AddressRepository;
 import com.backend.services.AccountInfoService;
 import com.backend.services.AccountService;
-
-import ch.qos.logback.core.testUtil.RandomUtil;
-import lombok.RequiredArgsConstructor;
+ 
 
 @RestController
 @RequestMapping("/teddy-store")

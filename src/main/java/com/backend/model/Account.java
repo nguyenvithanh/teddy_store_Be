@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,10 +48,11 @@ public class Account implements Serializable {
     private Boolean active;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonIgnore
     private Set<AccountInfo> accountInfo;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Cart> cart;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)

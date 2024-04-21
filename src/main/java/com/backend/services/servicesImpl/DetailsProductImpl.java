@@ -33,6 +33,7 @@ public class DetailsProductImpl implements DetailsProductService {
 			productDetailsDTO.setColor((String) result[2]);
 			productDetailsDTO.setSize((String) result[3]);
 			productDetailsDTO.setPurchases((Integer) result[4]);
+			productDetailsDTO.setImg_url((String) result[5]);
 
 			DetailsProDTOList.add(productDetailsDTO);
 		}
@@ -43,11 +44,6 @@ public class DetailsProductImpl implements DetailsProductService {
 
 	public List<DetailProDTO> getProductDetails() {
 		List<Object[]> results = detailsProductRepository.getProductDetails();
-		return convertToObjectDTO(results);
-	}
-
-	public List<DetailProDTO> getProductDt(String sizeId,String colorId) {
-		List<Object[]> results = detailsProductRepository.getProductDt(sizeId,colorId );
 		return convertToObjectDTO(results);
 	}
 

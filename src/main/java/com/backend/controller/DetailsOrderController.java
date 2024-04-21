@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.backend.dto.DetailOrdDTO;
 import com.backend.model.DetailsOrder;
 import com.backend.services.DetailsOrderService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/teddy-store")
@@ -25,4 +29,9 @@ public class DetailsOrderController {
     public DetailsOrder addNewOrderDetail(@RequestBody DetailsOrder detailsOrder) {
         return detailsOrderService.addNewDetailOrder(detailsOrder);
     }
+    @GetMapping("/DetailsOrders")
+    public List<DetailOrdDTO> getLatestOrderss() {
+        return detailsOrderService.getAllDetailsOrders();
+    }
+    
 }

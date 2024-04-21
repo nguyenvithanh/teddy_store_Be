@@ -12,13 +12,14 @@ import com.backend.model.DetailsProduct;
 
 @Repository
 public interface DetailsProductRepository extends JpaRepository<DetailsProduct, String>{
- @Query(value = "SELECT p.id, pr.name, c.color, s.size_no, COUNT(o.id) as purchases " +
+ @Query(value = "SELECT TOP 5 p.id, pr.name, c.color, s.size_no, COUNT(o.id) as purchases, pi.img_url " +
                    "FROM DETAILS_PRODUCT p " +
                    "JOIN [ORDER] o ON o.id = p.id " +
                    "JOIN PRODUCT pr ON pr.id = p.id_pro " +
                    "JOIN SIZE s ON s.id = p.id " +
                    "JOIN COLOR c ON c.id = p.id " +
-                   "GROUP BY p.id, pr.name, c.color, s.size_no", nativeQuery = true)
+                   "JOIN Product_Image pi ON pi.id_pro = pr.id " +
+                   "GROUP BY p.id, pr.name, c.color, s.size_no,pi.img_url", nativeQuery = true)
     List<Object[]> getProductDetails();
     
   @Query(value="SELECT dp.id FROM DETAILS_PRODUCT dp " +

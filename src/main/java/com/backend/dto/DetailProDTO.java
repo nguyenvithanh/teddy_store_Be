@@ -13,6 +13,7 @@ public class DetailProDTO {
 	private String color;
     private String size;
     private Integer purchases;
+    private String img_url;
 }
 
 

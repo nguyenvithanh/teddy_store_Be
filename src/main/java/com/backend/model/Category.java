@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,10 +35,10 @@ public class Category implements Serializable {
 	private Boolean active;
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-	@JsonBackReference
+	@JsonIgnore
 	private Set<Product> product;
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-	@JsonBackReference
+	@JsonIgnore
 	private Set<Service> service;
 }
