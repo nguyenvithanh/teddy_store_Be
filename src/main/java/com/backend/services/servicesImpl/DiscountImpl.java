@@ -17,7 +17,7 @@ import com.backend.repository.DiscountRepository;
 import com.backend.services.DiscountService;
 import com.backend.util.RandomUtil;
 
-import jakarta.mail.internet.ParseException;
+import java.text.ParseException;
 
 @Service
 public class DiscountImpl implements DiscountService{
@@ -55,41 +55,21 @@ public class DiscountImpl implements DiscountService{
 		return discountRepository.findAllDiscount(PageRequest.of(page, size));
 	}
 
-    @Override
+	@Override
     public Object updateDiscount(String id, Double discount, String startDate, String endDate, String productId) throws
-                                                                                                                 ParseException {
+                                                                                                                 ParseException { 
         Date date1 = null;
         Date date2 = null;
         if (startDate.contains(":")) { // Ki?m tra xem c� gi? trong chu?i kh�ng
-            try {
-				date1 = sdfWithTime.parse(startDate);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            date1 = sdfWithTime.parse(startDate);
         } else {
-            try {
-				date1 = sdfWithoutTime.parse(startDate);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            date1 = sdfWithoutTime.parse(startDate);
         }
 
         if (endDate.contains(":")) { // Ki?m tra xem c� gi? trong chu?i kh�ng
-            try {
-				date2 = sdfWithTime.parse(endDate);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            date2 = sdfWithTime.parse(endDate);
         } else {
-            try {
-				date2 = sdfWithoutTime.parse(endDate);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            date2 = sdfWithoutTime.parse(endDate);
         }
         var discountUpdate = discountRepository.findById(id);
         Date finalDate = date1;
@@ -104,7 +84,7 @@ public class DiscountImpl implements DiscountService{
             discountRepository.save(discount1);
         }, () -> {
             var lastDiscount = discountRepository.findLastDiscount();
-            var newDiscount = new Discount();
+            var newDiscount = new Discount(); 
             if (lastDiscount.isPresent()) {
                 newDiscount.setId(RandomUtil.getNextId(lastDiscount
                                                                .get()
@@ -122,6 +102,7 @@ public class DiscountImpl implements DiscountService{
         });
         return "OK";
     }
+
 
     @Override
     public Object deleteDiscount(String id) {

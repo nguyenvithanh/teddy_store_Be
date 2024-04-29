@@ -49,6 +49,14 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query("SELECT a FROM Product a ORDER BY a.id DESC LIMIT 1")
     Optional<Product> findLastProduct();
+    
+    @Query("""
+            SELECT p 
+            FROM Product p 
+           
+        """)
+    List<ProductRepositoryCustom> findAllProductNoDiscount();
+
 
     @Query("SELECT a FROM Product a JOIN FETCH a.detailsProduct dp WHERE dp.active = :active")
     List<ProductRepositoryCustom> findAllByActive(@Param("active") Boolean active);
@@ -64,6 +72,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
                             WHERE pd.active = true
             """)
     Page<ProductResponse> findAllProduct(Pageable pageable);
+    
+    Boolean existsByName(String name); 
 
     @Query("""
                         SELECT p

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,8 @@ public class AccountImpl implements AccountService {
     @Autowired
     private JavaMailSender mailSender;
     private Random random = new Random();
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public List<Account> getAllAccount() {
@@ -65,7 +68,7 @@ public class AccountImpl implements AccountService {
 
     @Override
     public boolean isExistUsername(String username) {
-        return accountRepository.findByUsername(username) != null;
+        return accountRepository.findByUsername(username).isPresent();
     }
 
     @Override
@@ -84,21 +87,30 @@ public class AccountImpl implements AccountService {
     @Override
     public String resetPassword(String email) {
         // TODO Auto-generated method stub
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
         try {
-            var newPassword = RandomUtil.generateRandomString(6);
-            helper.setFrom("thienhuy232003@gmail.com");
-            helper.setTo(email);
-            helper.setSubject("RESET PASSWORD TEDDY-STORE");
-            helper.setText("Mật khẩu mới của bạn là: " + newPassword, true);
-            mailSender.send(mimeMessage);
+            final String[] newPassword = new String[1];
+            newPassword[0] = RandomUtil.generateRandomString(6);
+
             var acc = accountRepository.findByEmail(email);
-            acc.ifPresent(account -> {
-                account.setPassword(newPassword);
+            acc.ifPresentOrElse(account -> {
+                account.setPassword(encoder.encode(newPassword[0]));
                 accountRepository.save(account);
+            }, () -> {
+                newPassword[0] = "NOT_FOUND_EMAIL";
             });
-            return newPassword;
+            if("NOT_FOUND_EMAIL".equals(newPassword[0])) {
+                return "NOT_FOUND_EMAIL";
+            }
+
+            helper.setTo(email);
+            helper.setFrom("TEDDY-STORE");
+            helper.setSubject("RESET PASSWORD TEDDY-STORE");
+            helper.setText("Mật khẩu mới của bạn là: " + newPassword[0], true);
+            mailSender.send(mimeMessage);
+            return newPassword[0];
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send email");
         }

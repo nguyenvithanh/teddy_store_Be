@@ -26,4 +26,8 @@ public interface ColorRepository extends JpaRepository<Color, String>{
     Optional<Color> findLastColor();
     @Query("SELECT c FROM Color c WHERE LOWER(c.color) LIKE %:color%")
     Page<Color> findAllByName(@Param("color") String color, PageRequest pageRequest);
+    
+    boolean existsByColor(String color);
+
+    boolean existsByColorAndIdIsNot(String color, String id);
 }

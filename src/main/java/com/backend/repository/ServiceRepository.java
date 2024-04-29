@@ -1,7 +1,10 @@
 package com.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +22,32 @@ public interface ServiceRepository extends JpaRepository<Service, String>{
         "WHERE p.id = ? " +
         "GROUP BY s.name, s.price,s.id ", nativeQuery = true)
         List<Object[]>getProService(@Param("id") String id);
+        
+        boolean existsByNameAndIdIsNot(String name, String id);
+
+        @Query("SELECT s FROM Service s order by s.id desc limit 1")
+        Optional<Service> findLastService();
+
+        @Query("SELECT s FROM Service s WHERE LOWER(s.name) LIKE %:name%")
+        Page<Service> searchByName(@Param("name") String name, Pageable pageable);
+
+        interface ServiceResponse {
+            String getId();
+
+            String getName();
+
+            String getPrice();
+
+            String getImage();
+
+            String getDescription();
+
+            CategoryResponse getCategory();
+
+            interface CategoryResponse {
+                String getId();
+
+                String getName();
+            }
+        }
 }

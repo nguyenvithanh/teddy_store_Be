@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,8 @@ public class AccountController {
 	private  AccountInfoService accountInforService;
 	@Autowired
 	private  AddressRepository addressRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/getAllAccount")
 	public List<Account> getAllAccount() {
@@ -72,8 +75,8 @@ public class AccountController {
 		return ResponseEntity.ok(acc);
 	}
 	@PostMapping("reset-password/{email}")
-	public void resetPassword(@PathVariable("email") String email) {
-		loginService.resetPassword(email);
+	public Object resetPassword(@PathVariable("email") String email) {
+		return loginService.resetPassword(email);
 	}
 
 	@PostMapping("/register")
@@ -86,7 +89,7 @@ public class AccountController {
 		}
 		Account acc = new Account();
 		acc.setUsername(payload.getUsername());
-		acc.setPassword(payload.getPassword());
+		acc.setPassword(passwordEncoder.encode(payload.getPassword()));
 		acc.setDate_create(new Date());
 		acc.setRole(false);
 		acc.setActive(true);

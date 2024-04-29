@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
  
 import com.backend.dto.ServiceProDTO;
+import com.backend.model.Category;
 import com.backend.repository.ServiceRepository;
 import com.backend.services.ServiceService;
+import com.backend.util.RandomUtil;
 
 @Service
 public class ServiceImpl implements ServiceService{
@@ -42,4 +45,72 @@ public class ServiceImpl implements ServiceService{
 		List<Object[]> results = serviceRepository.getProService(id);
 		return convertToObjectDTO(results);
 	}
+	
+	@Override
+    public Object findAllService(int page, int limit) {
+        return serviceRepository.findAll(PageRequest.of(page, limit));
+    }
+
+    @Override
+    public Object updateService(
+            String id, String description, String idCategory, String name, double price, String image
+    ) {
+        if (serviceRepository.existsByNameAndIdIsNot(name, id)) {
+            return "SERVICE_EXISTED";
+        }
+        var service = serviceRepository.findById(id);
+        var lastService = serviceRepository.findLastService();
+        var idService = RandomUtil.getNextId(null, "SV");
+        if (lastService.isPresent()) {
+            idService = RandomUtil.getNextId(lastService
+                                                     .get()
+                                                     .getId(), "SV");
+        }
+        var newCategory = new Category();
+        newCategory.setId(idCategory);
+        if (service.isPresent()) {
+            service
+                    .get()
+                    .setName(name);
+            service
+                    .get()
+                    .setDescription(description);
+            service
+                    .get()
+                    .setPrice(price);
+            service
+                    .get()
+                    .setCategory(newCategory);
+            if (image != null && !image.isEmpty()) {
+                service
+                        .get()
+                        .setImage(image);
+            }
+            serviceRepository.save(service.get());
+        } else {
+            var newService = new com.backend.model.Service();
+            newService.setId(idService);
+            newService.setName(name);
+            newService.setDescription(description);
+            newService.setPrice(price);
+            newService.setCategory(newCategory);
+            if (image != null && !image.isEmpty()) {
+                newService.setImage(image);
+            }
+            serviceRepository.save(newService);
+        }
+        return "OK";
+    }
+
+    @Override
+    public Object deleteService(String id) {
+        serviceRepository.deleteById(id);
+        return "OK";
+    }
+
+    @Override
+    public Object searchService(String sv) {
+        return serviceRepository.searchByName(sv.trim().toLowerCase(), PageRequest.of(0, 10));
+    } 
+
 }

@@ -24,13 +24,17 @@ public class CategoryImpl implements CategoryService {
         return cateRepository.findAll(pageable);
     }
 
-    @Override
+	@Override
     public Object updateCategory(String id, String name, Boolean active) {
-        // N?u id t?n t?i th? update, kh�ng t?n t?i th? t?o m?i
+        
         var category = cateRepository.findById(id);
 
-        // ki?m tra xem category c� t?n t?i kh�ng
         if (category.isPresent()) {
+            
+            if (cateRepository.existsByNameAndIdIsNot(name, id)) {
+                return "CATEGORY_EXISTED";
+            }
+
             category
                     .get()
                     .setName(name);
@@ -39,6 +43,10 @@ public class CategoryImpl implements CategoryService {
                     .setActive(active);
             cateRepository.save(category.get());
         } else {
+          
+            if (cateRepository.existsByName(name)) {
+                return "CATEGORY_EXISTED";
+            }
 
             // t?o m?i category
             var newCategory = new Category();
@@ -58,6 +66,13 @@ public class CategoryImpl implements CategoryService {
         }
         return "OK";
     }
+
+
+
+
+
+
+
 
     @Override
     public Object searchCategory(String name) {

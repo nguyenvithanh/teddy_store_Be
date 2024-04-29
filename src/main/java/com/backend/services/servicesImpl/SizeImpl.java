@@ -53,33 +53,41 @@ public class SizeImpl implements SizeService {
         return sizeRepository.findAll(pageable);
     }
 
-    @Override
-    public Object updateSize(String id, String size_no) {
-		// N?u id t?n t?i th? update, kh�ng t?n t?i th? t?o m?i
-        var size = sizeRepository.findById(id);
 
-		// ki?m tra xem size c� t?n t?i kh�ng
-        if (size.isPresent()) {
-			// update thong tin size
-            var size1 = size.get();
-            size1.setSize_no(size_no);
-            sizeRepository.save(size1);
-        } else {
-			// tim size cuoi cung de tao id moi theo quy tac tu tang tu dong
-            var lastSize = sizeRepository.findLastSize();
-            var newSize = new Size();
-			// truong hop da co size cuoi cung, thi tao id tang tu dong
-            if (lastSize.isPresent()) {
-                newSize.setId(RandomUtil.getNextId(lastSize.get().getId(), "SI"));
-            } else {
-				// truong hop chua co size nao, tao id moi voi SI00000001
-                newSize.setId(RandomUtil.getNextId(null, "SI"));
-            }
-            newSize.setSize_no(size_no);
-            sizeRepository.save(newSize);
-        }
-        return "OK";
-    }
+	   @Override
+	    public Object updateSize(String id, String size_no) {
+			
+	        var size = sizeRepository.findById(id);
+		
+	        if (size.isPresent()) {
+	            
+	            if(sizeRepository.existsBySize_noAndIdIsNot(size_no, id) > 0) {
+	                return "SIZE_EXISTED";
+	            }
+				
+	            var size1 = size.get();
+	            size1.setSize_no(size_no);
+	            sizeRepository.save(size1);
+	        } else {
+	            
+	            if(sizeRepository.existsBySize_no(size_no) > 0) {
+	                return "SIZE_EXISTED";
+	            }
+				
+	            var lastSize = sizeRepository.findLastSize();
+	            var newSize = new Size();
+				
+	            if (lastSize.isPresent()) {
+	                newSize.setId(RandomUtil.getNextId(lastSize.get().getId(), "SI"));
+	            } else {
+					
+	                newSize.setId(RandomUtil.getNextId(null, "SI"));
+	            }
+	            newSize.setSize_no(size_no);
+	            sizeRepository.save(newSize);
+	        }
+	        return "OK";
+	    }
 
     @Override
     public Object searchSize(String sizeNo) {

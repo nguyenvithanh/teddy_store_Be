@@ -31,6 +31,10 @@ Optional<Size> findLastSize();
 @Query("SELECT c FROM Size c WHERE LOWER(c.size_no) LIKE %:sizeNo%")
 Page<Size> findAllByName(@Param("sizeNo") String sizeNo, PageRequest pageRequest);
 
+@Query("SELECT COUNT(1) FROM Size c WHERE LOWER(c.size_no) = LOWER(:sizeNo)")
+Long existsBySize_no(@Param("sizeNo") String size_no);
 
+@Query("SELECT COUNT(1) FROM Size c WHERE LOWER(c.size_no) = LOWER(:sizeNo) AND c.id != :id")
+Long existsBySize_noAndIdIsNot(@Param("sizeNo") String size_no, @Param("id") String id); 
 	
 }

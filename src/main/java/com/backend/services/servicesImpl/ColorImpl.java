@@ -49,14 +49,25 @@ public class ColorImpl implements ColorService{
 		return colorRepository.findAll(pageable);
 	}
 
+
 	@Override
 	public Object updateColor(String id, String color) {
 		var colorEntity = colorRepository.findById(id);
 		if(colorEntity.isPresent()) {
+		
+			if(colorRepository.existsByColorAndIdIsNot(color, id)) {
+				return "COLOR_EXISTED";
+			}
+
 			var colorUpdate = colorEntity.get();
 			colorUpdate.setColor(color);
 			colorRepository.save(colorUpdate);
 		} else {
+			
+			if(colorRepository.existsByColor(color)) {
+				return "COLOR_EXISTED";
+			}
+
 			var colorNew = new Color();
 			var lastColor = colorRepository.findLastColor();
 			if(lastColor.isPresent()) {
@@ -68,7 +79,7 @@ public class ColorImpl implements ColorService{
 			colorRepository.save(colorNew);
 		}
 		return "OK";
-	}
+	} 
 
 	@Override
 	public Object searchColor(String color) {

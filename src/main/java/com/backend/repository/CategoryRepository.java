@@ -22,4 +22,7 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
 
 	    @Query("SELECT c FROM Category c WHERE c.active = :active")
 	    List<Category> findAllByActive(@Param("active") Boolean active);
+	    
+	    boolean existsByName(String name);
+	    boolean existsByNameAndIdIsNot(String name, String id);
 }

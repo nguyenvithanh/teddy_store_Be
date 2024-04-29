@@ -44,7 +44,6 @@ public class AccountInfoImpl implements AccountInfoService {
             DetailsDTO.setGender((Boolean) result[3]);
             DetailsDTO.setEmail((String) result[4]);
             DetailsDTO.setPhone((Integer) result[5]);
-            DetailsDTO.setAddress((String) result[6]);
             DetailsDTO.setBirthday((Date) result[7]);
 
             cartDetailsDTOList.add(DetailsDTO);

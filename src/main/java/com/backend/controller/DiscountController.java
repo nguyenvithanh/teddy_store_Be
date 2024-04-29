@@ -1,5 +1,6 @@
 package com.backend.controller;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import com.backend.model.Discount;
 import com.backend.payload.DiscountPayload;
 import com.backend.services.DiscountService;
 
-import jakarta.mail.internet.ParseException;
 
 @RestController
 @RequestMapping("/teddy-store")

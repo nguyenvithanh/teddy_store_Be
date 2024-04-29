@@ -86,10 +86,16 @@ public class ProductController {
         return proService.getAllProductActive();
     }
 
+    @GetMapping("getAllProductNoDiscount")
+    public Object getAllProductNoDiscount() {
+        return proRepository.findAllProductNoDiscount();
+    } 
+    
     @GetMapping("searchProduct")
     public Object searchProduct(@RequestParam("textSearch") String textSearch) {
         return proService.searchProductByName(textSearch);
     }
+    
     @PatchMapping("deleteProduct")
     public Object deleteProduct(@RequestBody ProductPayload productPayload) {
         var product = detailsProductRepository.findDetailsProductByProduct(productPayload.getId());
@@ -117,8 +123,7 @@ public class ProductController {
             @RequestParam(value = "listImageDelete", required = false) List<String> listImageDelete,
             @RequestParam(value = "images", required = false) List<MultipartFile> images
     ) {
-        // kiem tra xem co trung ten khong
-        
+       
         var product = new Product();
         var detailProduct = new DetailsProduct();
         var lastProductImage = productImageRepository.findLastProductImage();
@@ -126,7 +131,10 @@ public class ProductController {
         var color = colorRepository.findById(idColor);
         var size = sizeRepository.findById(idSize);
         AtomicReference<String> productImageId = new AtomicReference<>("");
-        if ("P-1".equalsIgnoreCase(id)) {
+        if ("P-1".equalsIgnoreCase(id)) { // id= p-1 (thêm mới) 
+        	if (proRepository.existsByName(name)) {
+                return "NAME_EXISTED";
+            }
             var lastProduct = proRepository.findLastProduct();
             if (lastProduct.isPresent()) {
                 product.setId(RandomUtil.getNextId(lastProduct
@@ -230,11 +238,11 @@ public class ProductController {
         detailProduct.setQuantity(quantity);
 
 
-        category.ifPresent(product::setCategory);
+        category.ifPresent(product::setCategory); // nếu category tồn tại set cho product
         color.ifPresent(detailProduct::setColor);
         size.ifPresent(detailProduct::setSize);
         if ("P-1".equalsIgnoreCase(id)) {
-            product.setDetailsProduct(Collections.singleton(detailProduct));
+            product.setDetailsProduct(Collections.singleton(detailProduct));  
         } else {
             detailsProductRepository.save(detailProduct);
         }
